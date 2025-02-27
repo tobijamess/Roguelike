@@ -3,9 +3,11 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "player.h"
 
 class Enemy {
 protected:
+	Player& player;
 	sf::Texture texture;				// spritesheet texture
 	sf::Sprite sprite;					// enemy sprite
 	int xSpriteIndex;					// x index of sprite texture
@@ -14,7 +16,7 @@ protected:
 	sf::Vector2f enemyScaleFactor;		// scale of the sprite
 
 	int health;
-	float speed;						
+	float speed;
 
 	float hitboxScaleFactor;			// scale of the hitbox
 	sf::CircleShape hitbox;				// hitbox for enemy
@@ -51,46 +53,58 @@ protected:
 		attackCircle.setRadius(attackRadius);
 		attackCircle.setOrigin(attackRadius, attackRadius);
 		attackCircle.setFillColor(sf::Color::Transparent);
-		attackCircle.setOutlineColor(sf::Color::Red);
+		attackCircle.setOutlineColor(sf::Color::Blue);
 		attackCircle.setOutlineThickness(1);
 		attackCircle.setPosition(sprite.getPosition());
 	}
 
-	bool IsPlayerInRange(const sf::Vector2f& playerPos, float radius);
-
-	const sf::CircleShape GetHitbox() const {
-		return hitbox;
-	}
 public:
 	// constructor
-	Enemy(sf::Texture txtre, sf::Sprite sprt, int xIndx, int yIndx,
+	Enemy(Player& plyr, sf::Texture txtre, sf::Sprite sprt, int xIndx, int yIndx,
 		sf::Vector2f size, sf::Vector2f scale, int hp, float spd,
 		float htbxScale, sf::CircleShape htbx, float htbxRad, float dtctRad,
 		sf::CircleShape dtctCrcl, float atkRad, sf::CircleShape atkCrcl)
-		: texture(txtre), sprite(sprt), xSpriteIndex(xIndx), ySpriteIndex(yIndx),
-		spriteSize(size), enemyScaleFactor(scale), health(hp), speed(spd),
-		hitboxScaleFactor(htbxScale), hitbox(htbx), hitboxRadius(htbxRad),
+		: player(plyr), texture(txtre), sprite(sprt), xSpriteIndex(xIndx),
+		ySpriteIndex(yIndx), spriteSize(size), enemyScaleFactor(scale), health(hp),
+		speed(spd), hitboxScaleFactor(htbxScale), hitbox(htbx), hitboxRadius(htbxRad),
 		detectionRadius(dtctRad), detectionCircle(dtctCrcl), attackRadius(atkRad),
 		attackCircle(atkCrcl)
 	{}
 
 	// destructor
 	virtual ~Enemy() = default;
+
 	// override functions
 	virtual void Initialize() = 0;
 	virtual void Load() = 0;
 	virtual void Update(float dt) = 0;
 	virtual void Draw(sf::RenderWindow& window) = 0;
+
+	void SetPosition(const sf::Vector2f& pos) {
+		sprite.setPosition(pos);
+		hitbox.setPosition(pos);
+		detectionCircle.setPosition(pos);
+		attackCircle.setPosition(pos);
+	}
+
+	// getter functions for collision
+	const sf::CircleShape& ConstGetHitbox() const {
+		return hitbox;
+	}
+	const sf::Sprite& ConstGetSprite() const {
+		return sprite;
+	}
 };
 
 class Orc : public Enemy {
 public:
 	// default constructor
-	Orc()
-		: Enemy(sf::Texture(), sf::Sprite(), 0, 0, sf::Vector2f(),
+	Orc(Player& player)
+		: Enemy(player, sf::Texture(), sf::Sprite(), 0, 0, sf::Vector2f(),
 			sf::Vector2f(), 0, 0.f, 0.f, sf::CircleShape(), 0.f, 0.f,
 			sf::CircleShape(), 0.f, sf::CircleShape()) 
 	{}
+
 	// derived over-ridden functions
 	void Initialize() override;
 	void Load() override;
@@ -101,18 +115,17 @@ public:
 class Goblin : public Enemy {
 public:
 	// default constructor
-	Goblin()
-		: Enemy(sf::Texture(), sf::Sprite(), 0, 0, sf::Vector2f(),
+	Goblin(Player& player)
+		: Enemy(player, sf::Texture(), sf::Sprite(), 0, 0, sf::Vector2f(),
 			sf::Vector2f(), 0, 0.f, 0.f, sf::CircleShape(), 0.f, 0.f,
 			sf::CircleShape(), 0.f, sf::CircleShape())
 	{}
+
 	// derived over-ridden functions
 	void Initialize() override;
 	void Load() override;
 	void Update(float dt) override;
 	void Draw(sf::RenderWindow& window) override;
-private:
-
 };
 
 #endif

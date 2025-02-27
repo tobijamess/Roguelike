@@ -1,12 +1,16 @@
 #include "player.h"
 #include "utility.h"
+#include "collision.h"
+
+Player::Player()
+    : health(200),
+    speed(300.f),
+    hitboxScaleFactor(1.f)
+{}
 
 void Player::Initialize() {
     spriteSize = sf::Vector2f(64.f, 64.f);
     playerScaleFactor = sf::Vector2f(2.f, 2.f);
-    hitboxScaleFactor = 1.f;
-    health = 200;
-    speed = 250.f;
 }
 
 void Player::Load() {
@@ -52,6 +56,11 @@ void Player::Update(float dt) {
         movement = Utility::NormalizeVector(movement);
     }
 
+    bool isMoving = (sf::Keyboard::isKeyPressed(sf::Keyboard::W) 
+        || sf::Keyboard::isKeyPressed(sf::Keyboard::A) 
+        || sf::Keyboard::isKeyPressed(sf::Keyboard::S) 
+        || sf::Keyboard::isKeyPressed(sf::Keyboard::D));
+
     sprite.move(movement * speed * dt);
     hitbox.move(movement * speed * dt);
 }
@@ -59,4 +68,10 @@ void Player::Update(float dt) {
 void Player::Draw(sf::RenderWindow& window) {
 	window.draw(sprite);
     window.draw(hitbox);
+}
+
+void Player::Move(const sf::Vector2f& offset) {
+    // move sprite and hitbox based on collision offset
+    sprite.setPosition(sprite.getPosition() + offset);
+    hitbox.setPosition(sprite.getPosition());
 }

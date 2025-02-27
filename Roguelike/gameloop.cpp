@@ -1,17 +1,17 @@
 #include "gameloop.h"
-#include "initialization.h"
 
 Game::Game()
-	: window(sf::VideoMode(1280, 720), "Roguelike")
+	: window(sf::VideoMode(1280, 720), "Roguelike"),
+	player(),
+	enemyManager(player)
 {
 	view.setSize(window.getSize().x, window.getSize().y);
 	window.setView(view);
 	
 	// load and initialize class instances
-	enemyManager.InitializeEnemies();
-	enemyManager.LoadEnemies();
 	player.Initialize();
 	player.Load();
+	enemyManager.LoadEnemies();
 }
 
 void Game::Run() {
@@ -28,12 +28,21 @@ void Game::GameLoop(float dt) {
 			window.close();
 	}
 
-	enemyManager.UpdateEnemies(dt);
+	if (enemyManager.GetEnemies().size() < enemyManager.GetEnemyCap()) {
+		enemyManager.SpawnRandomEnemy();
+	}
+
+	for (const auto& enemy : enemyManager.GetEnemies()) {
+		if (Collision::PlayerEnemyCollision(player, *enemy, dt,
+			player.GetMovingStatus())) {
+			std::cout << "Collision with Enemy!\n";
+		}
+	}
 	player.Update(dt);
-
+	enemyManager.UpdateEnemies(dt);
+	
 	window.clear();
-	enemyManager.DrawEnemies(window);
 	player.Draw(window);
+	enemyManager.DrawEnemies(window);
 	window.display();
-
 }

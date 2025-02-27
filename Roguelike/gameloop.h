@@ -5,12 +5,12 @@
 #include <iostream>
 #include "enemymanager.h"
 #include "player.h"
+#include "collision.h"
 
 class Game {
 private:
-	// class object creation
-	EnemyManager enemyManager;
 	Player player;
+	EnemyManager enemyManager;
 	
 	sf::RenderWindow window;
 	sf::View view;

@@ -146,7 +146,6 @@
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemymanager.cpp" />
     <ClCompile Include="gameloop.cpp" />
-    <ClCompile Include="initialization.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
   </ItemGroup>
@@ -156,7 +155,6 @@
     <ClInclude Include="enemymanager.h" />
     <ClInclude Include="environment.h" />
     <ClInclude Include="gameloop.h" />
-    <ClInclude Include="initialization.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="projectile.h" />

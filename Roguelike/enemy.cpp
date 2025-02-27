@@ -5,16 +5,15 @@ void Orc::Initialize() {
 	spriteSize = sf::Vector2f(64.f, 64.f);
 	enemyScaleFactor = sf::Vector2f(2.f, 2.f);
 	hitboxScaleFactor = 1.f;
-	detectionRadius = 200.f;
-	attackRadius = 400.f;
+	detectionRadius = 300.f;
+	attackRadius = 50.f;
 	health = 100;
-	speed = 2.5f;
+	speed = 200.f;
 }
 
 void Orc::Load() {
 	if (!texture.loadFromFile("assets/enemy/textures/orcspritesheet.png")) 
 		return;
-		
 	std::cout << "Orc texture loaded successfully!\n";
 
 	sprite.setTexture(texture);
@@ -29,14 +28,18 @@ void Orc::Load() {
 }
       
 void Orc::Update(float dt) {
-	/*if (IsPlayerInRange(playerPos, detectionRadius)) {
-		if (!IsPlayerInRange(playerPos, attackRadius)) {
-			sf::Vector2f direction = playerPos - sprite.getPosition();
+	detectionCircle.setPosition(sprite.getPosition());
+	attackCircle.setPosition(sprite.getPosition());
+	sf::Vector2f playerPos = player.ConstGetSprite().getPosition();
+	sf::Vector2f enemyPos = sprite.getPosition();
+	if (Utility::IsPlayerInRange(playerPos, enemyPos, detectionRadius)) {
+		if (!Utility::IsPlayerInRange(playerPos, enemyPos, attackRadius)) {
+			sf::Vector2f direction = playerPos - enemyPos;
 			direction = Utility::NormalizeVector(direction);
 			sprite.move(direction * speed * dt);
 			hitbox.move(direction * speed * dt);
 		}
-	}*/
+	}
 }
 
 void Orc::Draw(sf::RenderWindow& window) {
@@ -51,16 +54,15 @@ void Goblin::Initialize() {
 	enemyScaleFactor = sf::Vector2f(2.f, 2.f);
 	hitboxScaleFactor = 1.f;
 	detectionRadius = 100.f;
-	attackRadius = 200.f;
+	attackRadius = 50.f;
 	health = 50;
-	speed = 4.f;
+	speed = 225.f;
 }
 
 void Goblin::Load() {
 	if (!texture.loadFromFile("assets/enemy/textures/goblinspritesheet.png"))
 		return;
 	std::cout << "Goblin texture loaded successfully!\n";
-
 
 	sprite.setTexture(texture);
 	sprite.setTextureRect(sf::IntRect(xSpriteIndex * spriteSize.x,
@@ -74,7 +76,18 @@ void Goblin::Load() {
 }
 
 void Goblin::Update(float dt) {
-
+	detectionCircle.setPosition(sprite.getPosition());
+	attackCircle.setPosition(sprite.getPosition());
+	sf::Vector2f playerPos = player.ConstGetSprite().getPosition();
+	sf::Vector2f enemyPos = sprite.getPosition();
+	if (Utility::IsPlayerInRange(playerPos, enemyPos, detectionRadius)) {
+		if (!Utility::IsPlayerInRange(playerPos, enemyPos, attackRadius)) {
+			sf::Vector2f direction = playerPos - enemyPos;
+			direction = Utility::NormalizeVector(direction);
+			sprite.move(direction * speed * dt);
+			hitbox.move(direction * speed * dt);
+		}
+	}
 }
 
 void Goblin::Draw(sf::RenderWindow& window) {
@@ -83,9 +96,3 @@ void Goblin::Draw(sf::RenderWindow& window) {
 	window.draw(attackCircle);
 	window.draw(detectionCircle);
 }
-
-//bool Enemy::IsPlayerInRange(const sf::Vector2f& playerPos, float radius) {
-//	sf::Vector2f direction = playerPos - sprite.getPosition();
-//	float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-//	return distance <= radius;
-//}

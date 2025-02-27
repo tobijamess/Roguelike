@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "enemy.h"
+#include "player.h"
 
 namespace Utility {
 
@@ -19,25 +20,15 @@ namespace Utility {
 		return normalizedVector;
 	}
 
-	inline bool CollisionDetection(const Player& player, const Enemy& enemy) {
-		sf::Vector2f direction;
-		sf::CircleShape playerHitbox = player.GetHitbox();
-		sf::CircleShape enemyHitbox = enemy.GetHitbox();
+	inline bool IsPlayerInRange(const sf::Vector2f& playerPos,
+		const sf::Vector2f& enemyPos, float radius) {
 		// target - current to find direction vector from player to enemy
-		direction = enemyHitbox.getPosition() - playerHitbox.getPosition();
-		// get magnitude or m by getting the square root of direction.x^2 + direction.y^2 (magnitude is the length)
+		sf::Vector2f direction = playerPos - enemyPos;
+		// get magnitude (length) of the vector
 		float m = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-		// if m (length) less than or equal to 64, collision is happening (because I set both circles radius to 32)
-		// check if the distance is less than or equal to the sum of the radii
-		float combinedRadius = playerHitbox.getRadius() + enemyHitbox.getRadius();
-		if (m <= combinedRadius) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		// if m less than or equal to radius, player is within detection/attack range
+		return m <= radius;
 	}
 }
-
 
 #endif
