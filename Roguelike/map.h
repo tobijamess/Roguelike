@@ -23,72 +23,69 @@ struct Map {
 	std::vector<TileLayer> layers;
 };
 
-bool LoadMap(const std::string& filename, sf::Texture& tileAtlas,
+inline bool LoadMap(const std::string& filename, sf::Texture& tileAtlas,
 	int baseTileSize, Map& map) {
-	std::ifstream inFile(filename);
+	std::ifstream file(filename);
 
-	if (!inFile.is_open()) {
+	if (!file.is_open()) {
 		std::cerr << "Failed to open map file: " << filename << "\n";
 		return false;
 	}
 
-	nlohmann::json j;
-	inFile >> j;
-
-	if (!j.contains("layers")) {
-		std::cerr << "Map file is missing layer data.\n";
-		return false;
-	}
-
+	nlohmann::json mapData;
+	file >> mapData;
 	map.layers.clear();
 
-	for (auto& layerJSON : j["layers"]) {
-		TileLayer layer;
-		layer.width = layerJSON["width"].get<int>();
-		layer.height = layerJSON["height"].get<int>();
-		layer.opacity = layerJSON["opacity"].get<float>();
+    // iterate over each layer stored in the JSON
+    for (const auto& layerData : mapData["layers"]) {
+        TileLayer newLayer;
+        newLayer.width = layerData["width"].get<int>();
+        newLayer.height = layerData["height"].get<int>();
+        newLayer.opacity = layerData["opacity"].get<float>();
 
-		layer.tiles.resize(layer.height, std::vector<Tile>(layer.width));
-		layer.collisionGrid.resize(layer.height,
-			std::vector<bool>(layer.width, false));
+        // resize the tile grid
+        newLayer.tiles.resize(newLayer.height, std::vector<Tile>(newLayer.width));
 
-		auto tilesJSON = layerJSON["tiles"];
+        // process the "tiles" array
+        const auto& tiles = layerData["tiles"];
+        for (int y = 0; y < newLayer.height; ++y) {
+            for (int x = 0; x < newLayer.width; ++x) {
+                // skip empty tiles
+                if (tiles[y][x].is_null()) continue;
 
-		for (int y = 0; y < layer.height; ++y) {
-			for (int x = 0; x < layer.width; ++x) {
-				int tileIndex = tilesJSON[y][x].get<int>();
-				layer.tiles[y][x].index = tileIndex;
+                const auto& tileData = tiles[y][x];
+                Tile& tile = newLayer.tiles[y][x];
 
-				if (tileIndex >= 0) {
-					int tilesPerRow = tileAtlas.getSize().x / baseTileSize;
-					int tileX = tileIndex % tilesPerRow;
-					int tileY = tileIndex / tilesPerRow;
-					sf::IntRect texRect(tileX * baseTileSize, tileY * baseTileSize,
-						baseTileSize, baseTileSize);
+                // extract the tile index
+                tile.index = tileData["index"].get<int>();
 
-					layer.tiles[y][x].sprite.setTexture(tileAtlas);
-					layer.tiles[y][x].sprite.setTextureRect(texRect);
-					layer.tiles[y][x].sprite.setPosition(static_cast<float>(
-						x * baseTileSize), static_cast<float>(y * baseTileSize));
+                // set up the sprite
+                tile.sprite.setTexture(tileAtlas);
+                tile.sprite.setTextureRect(sf::IntRect(
+                    tileData["textureRect"]["left"].get<int>(),
+                    tileData["textureRect"]["top"].get<int>(),
+                    tileData["textureRect"]["width"].get<int>(),
+                    tileData["textureRect"]["height"].get<int>()
+                ));
+                tile.sprite.setPosition(
+                    tileData["position"]["x"].get<float>(),
+                    tileData["position"]["y"].get<float>()
+                );
+            }
+        }
 
-					sf::Color color = layer.tiles[y][x].sprite.getColor();
-					color.a = static_cast<sf::Uint8>(layer.opacity * 255);
-					layer.tiles[y][x].sprite.setColor(color);
-				}
-			}
-		}
-
-		auto collisionJSON = layerJSON["collision"];
-
-		for (int y = 0; y < layer.height; ++y) {
-			for (int x = 0; x < layer.width; ++x) {
-				layer.collisionGrid[y][x] = collisionJSON[y][x].get<bool>();
-			}
-		}
-
-		map.layers.push_back(layer);
-	}
-	return true;
+        // resize and load the collision grid
+        newLayer.collisionGrid.resize(newLayer.height, std::vector<bool>(newLayer.width, false));
+        const auto& collisionGridData = layerData["collisionGrid"];
+        for (int y = 0; y < newLayer.height; ++y) {
+            for (int x = 0; x < newLayer.width; ++x) {
+                newLayer.collisionGrid[y][x] = collisionGridData[y][x].get<bool>();
+            }
+        }
+        // add the layer to the map
+        map.layers.push_back(newLayer);
+    }
+    return true;
 }
 
 #endif

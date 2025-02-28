@@ -6,6 +6,7 @@
 #include "enemymanager.h"
 #include "player.h"
 #include "collision.h"
+#include "map.h"
 
 class Game {
 private:
@@ -16,6 +17,12 @@ private:
 	sf::View view;
 	sf::Clock clock;
 	float dt;
+
+	Map map;
+	sf::Texture tileAtlas;
+	int baseTileSize = 16;
+
+	void DrawMap(sf::RenderWindow& window);
 protected:
 
 public:

@@ -5,12 +5,12 @@
 Player::Player()
     : health(200),
     speed(300.f),
-    hitboxScaleFactor(1.f)
+    hitboxScaleFactor(0.25f)
 {}
 
 void Player::Initialize() {
     spriteSize = sf::Vector2f(64.f, 64.f);
-    playerScaleFactor = sf::Vector2f(2.f, 2.f);
+    playerScaleFactor = sf::Vector2f(1.f, 1.f);
 }
 
 void Player::Load() {

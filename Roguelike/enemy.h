@@ -91,9 +91,19 @@ public:
 	const sf::CircleShape& ConstGetHitbox() const {
 		return hitbox;
 	}
+	sf::CircleShape& GetHitbox() {
+		return hitbox;
+	}
 	const sf::Sprite& ConstGetSprite() const {
 		return sprite;
 	}
+	sf::Sprite& GetSprite() {
+		return sprite;
+	}
+	const float& ConstGetSpeed() const {
+		return speed;
+	}
+
 };
 
 class Orc : public Enemy {

@@ -3,8 +3,8 @@
 
 void Orc::Initialize() {
 	spriteSize = sf::Vector2f(64.f, 64.f);
-	enemyScaleFactor = sf::Vector2f(2.f, 2.f);
-	hitboxScaleFactor = 1.f;
+	enemyScaleFactor = sf::Vector2f(1.f, 1.f);
+	hitboxScaleFactor = 0.25f;
 	detectionRadius = 300.f;
 	attackRadius = 50.f;
 	health = 100;
@@ -51,8 +51,8 @@ void Orc::Draw(sf::RenderWindow& window) {
 
 void Goblin::Initialize() {
 	spriteSize = sf::Vector2f(64.f, 64.f);
-	enemyScaleFactor = sf::Vector2f(2.f, 2.f);
-	hitboxScaleFactor = 1.f;
+	enemyScaleFactor = sf::Vector2f(1.f, 1.f);
+	hitboxScaleFactor = 0.25f;
 	detectionRadius = 100.f;
 	attackRadius = 50.f;
 	health = 50;
