@@ -157,6 +157,7 @@
     <ClInclude Include="gameloop.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="playerview.h" />
     <ClInclude Include="projectile.h" />
     <ClInclude Include="utility.h" />
   </ItemGroup>

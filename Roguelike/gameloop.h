@@ -5,6 +5,7 @@
 #include <iostream>
 #include "enemymanager.h"
 #include "player.h"
+#include "playerview.h"
 #include "collision.h"
 #include "map.h"
 

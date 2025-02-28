@@ -107,22 +107,32 @@ namespace Collision {
                             // create a rectangle for the tile
                             sf::FloatRect tileRect(x * baseTileSize,
                                 y * baseTileSize, baseTileSize, baseTileSize);
+
                             if (CheckCircleRectCollision(hitbox, tileRect)) {
                                 sf::Vector2f circleCenter = hitbox.getPosition();
-                                float closestX = std::max(tileRect.left, std::min(circleCenter.x,
-                                    tileRect.left + tileRect.width));
-                                float closestY = std::max(tileRect.top, std::min(circleCenter.y,
-                                    tileRect.top + tileRect.height));
 
-                                sf::Vector2f collisionVec = circleCenter - sf::Vector2f(closestX, closestY);
-                                float distance = std::sqrt(collisionVec.x * collisionVec.x + collisionVec.y * collisionVec.y);
+                                float closestX = std::max(tileRect.left,
+                                    std::min(circleCenter.x,
+                                    tileRect.left + tileRect.width));
+
+                                float closestY = std::max(tileRect.top,
+                                    std::min(circleCenter.y,
+                                        tileRect.top + tileRect.height));
+
+                                sf::Vector2f collisionVec = circleCenter
+                                    - sf::Vector2f(closestX, closestY);
+
+                                float distance = std::sqrt(collisionVec.x *
+                                    collisionVec.x + collisionVec.y
+                                    * collisionVec.y);
+
                                 if (distance == 0)
-                                    continue; // Avoid division by zero if center is exactly on the edge
+                                    continue;
 
                                 sf::Vector2f normal = collisionVec / distance;
 
-                                // Use the computed normal to slide the entity along the tile boundary
-                                SlideEntityAlongTile(entitySprite, hitbox, entitySpeed, dt, normal);
+                                SlideEntityAlongTile(entitySprite, hitbox,
+                                    entitySpeed, dt, normal);
                             }
                         }
                     }
@@ -130,7 +140,6 @@ namespace Collision {
             }
         }
     }
-
 }
 
 #endif

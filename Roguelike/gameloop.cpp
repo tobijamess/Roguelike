@@ -4,10 +4,7 @@ Game::Game()
 	: window(sf::VideoMode(1280, 720), "Roguelike"),
 	player(),
 	enemyManager(player)
-{
-	view.setSize(window.getSize().x, window.getSize().y);
-	window.setView(view);
-	
+{	
 	// load and initialize class instances
 	player.Initialize();
 	player.Load();
@@ -54,6 +51,7 @@ void Game::Run() {
 }
 
 void Game::GameLoop(float dt) {
+	PlayerView::SetUpPlayerView(player, window);
 	sf::Event event;
 	while (window.pollEvent(event)) {
 		if (event.type == sf::Event::Closed)
@@ -87,6 +85,9 @@ void Game::GameLoop(float dt) {
 
 	player.Draw(window);
 	enemyManager.DrawEnemies(window);
+
+	
+
 	window.display();
 }
 
