@@ -32,7 +32,8 @@ void Game::DrawMap(sf::RenderWindow& window) {
 				}
 				// draw a collision overlay for collidable tiles
 				if (layer.collisionGrid[y][x]) {
-					sf::RectangleShape collisionRect(sf::Vector2f(baseTileSize, baseTileSize));
+					sf::RectangleShape collisionRect(sf::Vector2f(baseTileSize,
+						baseTileSize));
 					collisionRect.setPosition(static_cast<float>(x * baseTileSize),
 						static_cast<float>(y * baseTileSize));
 					collisionRect.setFillColor(sf::Color(255, 0, 0, 100));
@@ -71,12 +72,12 @@ void Game::GameLoop(float dt) {
 	player.Update(dt);
 	enemyManager.UpdateEnemies(dt);
 
-	Collision::HandleTileCollisions(player.GetSprite(), player.GetHitbox(),
-		player.ConstGetSpeed(), dt, map, baseTileSize);
+	Collision::HandleTileCollisionsMTV(player.GetSprite(), player.GetHitbox(),
+		player.ConstGetSpeed(), dt, map, baseTileSize, player.GetMovingStatus());
 
 	for (const auto& enemy : enemyManager.GetEnemies()) {
-		Collision::HandleTileCollisions(enemy->GetSprite(), enemy->GetHitbox(),
-			enemy->ConstGetSpeed(), dt, map, baseTileSize);
+		Collision::HandleTileCollisionsMTV(enemy->GetSprite(), enemy->GetHitbox(),
+			enemy->ConstGetSpeed(), dt, map, baseTileSize, enemy->GetMovingStatus());
 	}
 	
 	window.clear();

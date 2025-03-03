@@ -17,6 +17,7 @@ protected:
 
 	int health;
 	float speed;
+	bool isMoving = false;
 
 	float hitboxScaleFactor;			// scale of the hitbox
 	sf::CircleShape hitbox;				// hitbox for enemy
@@ -61,14 +62,14 @@ protected:
 public:
 	// constructor
 	Enemy(Player& plyr, sf::Texture txtre, sf::Sprite sprt, int xIndx, int yIndx,
-		sf::Vector2f size, sf::Vector2f scale, int hp, float spd,
+		sf::Vector2f size, sf::Vector2f scale, int hp, float spd, bool moving,
 		float htbxScale, sf::CircleShape htbx, float htbxRad, float dtctRad,
 		sf::CircleShape dtctCrcl, float atkRad, sf::CircleShape atkCrcl)
 		: player(plyr), texture(txtre), sprite(sprt), xSpriteIndex(xIndx),
 		ySpriteIndex(yIndx), spriteSize(size), enemyScaleFactor(scale), health(hp),
-		speed(spd), hitboxScaleFactor(htbxScale), hitbox(htbx), hitboxRadius(htbxRad),
-		detectionRadius(dtctRad), detectionCircle(dtctCrcl), attackRadius(atkRad),
-		attackCircle(atkCrcl)
+		speed(spd), isMoving(moving), hitboxScaleFactor(htbxScale), hitbox(htbx),
+		hitboxRadius(htbxRad), detectionRadius(dtctRad), detectionCircle(dtctCrcl),
+		attackRadius(atkRad), attackCircle(atkCrcl)
 	{}
 
 	// destructor
@@ -103,6 +104,9 @@ public:
 	const float& ConstGetSpeed() const {
 		return speed;
 	}
+	const bool& GetMovingStatus() const{
+		return isMoving;
+	}
 
 };
 
@@ -111,7 +115,7 @@ public:
 	// default constructor
 	Orc(Player& player)
 		: Enemy(player, sf::Texture(), sf::Sprite(), 0, 0, sf::Vector2f(),
-			sf::Vector2f(), 0, 0.f, 0.f, sf::CircleShape(), 0.f, 0.f,
+			sf::Vector2f(), 0, 0.f, false, 0.f, sf::CircleShape(), 0.f, 0.f,
 			sf::CircleShape(), 0.f, sf::CircleShape()) 
 	{}
 
@@ -127,7 +131,7 @@ public:
 	// default constructor
 	Goblin(Player& player)
 		: Enemy(player, sf::Texture(), sf::Sprite(), 0, 0, sf::Vector2f(),
-			sf::Vector2f(), 0, 0.f, 0.f, sf::CircleShape(), 0.f, 0.f,
+			sf::Vector2f(), 0, 0.f, false, 0.f, sf::CircleShape(), 0.f, 0.f,
 			sf::CircleShape(), 0.f, sf::CircleShape())
 	{}
 

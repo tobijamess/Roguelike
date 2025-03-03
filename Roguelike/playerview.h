@@ -26,7 +26,8 @@ namespace PlayerView {
 
 		const float maxOffset = 100.f;
 		if (std::sqrt(offset.x * offset.x + offset.y * offset.y) > maxOffset) {
-			offset = (offset / std::sqrt(offset.x * offset.x + offset.y * offset.y)) * maxOffset;
+			offset = (offset / std::sqrt(offset.x * offset.x
+				+ offset.y * offset.y)) * maxOffset;
 		}
 
 		playerView.setCenter(playerPos + offset);

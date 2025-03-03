@@ -87,6 +87,7 @@ void Goblin::Update(float dt) {
 			sprite.move(direction * speed * dt);
 			hitbox.move(direction * speed * dt);
 		}
+		isMoving = true;
 	}
 }
 

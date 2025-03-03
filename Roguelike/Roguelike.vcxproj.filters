@@ -30,6 +30,12 @@
     <ClCompile Include="player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="projectile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="projectilemanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="projectile.h">
@@ -60,6 +66,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="playerview.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="projectilemanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -75,7 +75,8 @@ inline bool LoadMap(const std::string& filename, sf::Texture& tileAtlas,
         }
 
         // resize and load the collision grid
-        newLayer.collisionGrid.resize(newLayer.height, std::vector<bool>(newLayer.width, false));
+        newLayer.collisionGrid.resize(newLayer.height,
+            std::vector<bool>(newLayer.width, false));
         const auto& collisionGridData = layerData["collisionGrid"];
         for (int y = 0; y < newLayer.height; ++y) {
             for (int x = 0; x < newLayer.width; ++x) {

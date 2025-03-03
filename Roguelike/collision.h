@@ -87,52 +87,64 @@ namespace Collision {
         entitySprite.move(slideOffset);
     }
 
-    inline void HandleTileCollisions(sf::Sprite& entitySprite,
+    // adjusts the entity pos by subtracting the minimum translation vector
+    // so it sits flush with tiles
+    inline void HandleTileCollisionsMTV(sf::Sprite& entitySprite,
         sf::CircleShape& hitbox, float entitySpeed, float dt,
-        const Map& map, int baseTileSize) {
-        // get the entity's current position
-        sf::Vector2f pos = hitbox.getPosition();
+        const Map& map, int baseTileSize, bool isMoving) {
 
-        // determine the grid cell
+        // get the entities current pos and determine grid cell pos
+        sf::Vector2f pos = hitbox.getPosition();
         int tileX = static_cast<int>(pos.x) / baseTileSize;
         int tileY = static_cast<int>(pos.y) / baseTileSize;
 
-        // loop over nearby cells
+        // loop over nearby grid cells
         for (int y = tileY - 1; y <= tileY + 1; ++y) {
             for (int x = tileX - 1; x <= tileX + 1; ++x) {
                 for (const auto& layer : map.layers) {
-                    // check bounds
                     if (y >= 0 && y < layer.height && x >= 0 && x < layer.width) {
                         if (layer.collisionGrid[y][x]) {
-                            // create a rectangle for the tile
                             sf::FloatRect tileRect(x * baseTileSize,
                                 y * baseTileSize, baseTileSize, baseTileSize);
-
                             if (CheckCircleRectCollision(hitbox, tileRect)) {
-                                sf::Vector2f circleCenter = hitbox.getPosition();
-
+                                // find closest point on the tile to circle midpoint
+                                sf::Vector2f circleMidpoint = hitbox.getPosition();
                                 float closestX = std::max(tileRect.left,
-                                    std::min(circleCenter.x,
-                                    tileRect.left + tileRect.width));
-
+                                    std::min(circleMidpoint.x, tileRect.left
+                                        + tileRect.width));
                                 float closestY = std::max(tileRect.top,
-                                    std::min(circleCenter.y,
-                                        tileRect.top + tileRect.height));
+                                    std::min(circleMidpoint.y, tileRect.top
+                                        + tileRect.height));
 
-                                sf::Vector2f collisionVec = circleCenter
+                                // calculate the collision vector from tile to circle
+                                sf::Vector2f collisionVec = circleMidpoint 
                                     - sf::Vector2f(closestX, closestY);
+                                float distance = 
+                                    std::sqrt(collisionVec.x * collisionVec.x
+                                        + collisionVec.y * collisionVec.y);
 
-                                float distance = std::sqrt(collisionVec.x *
-                                    collisionVec.x + collisionVec.y
-                                    * collisionVec.y);
-
-                                if (distance == 0)
+                                if (distance == 0.f)
                                     continue;
 
+                                // normalize to get collision normal
                                 sf::Vector2f normal = collisionVec / distance;
 
-                                SlideEntityAlongTile(entitySprite, hitbox,
-                                    entitySpeed, dt, normal);
+                                // find penetration depth
+                                float pen = hitbox.getRadius() - distance;
+                                if (pen > 0.f) {
+                                    sf::Vector2f MTV = normal * pen;
+                                    entitySprite.move(MTV);
+                                    hitbox.move(MTV);
+
+                                    if (isMoving) {
+                                        sf::Vector2f tangent(-normal.y, normal.x);
+                                        sf::Vector2f slideOffset =
+                                            tangent * entitySpeed * dt;
+                                        entitySprite.move(slideOffset);
+                                        hitbox.move(slideOffset);
+                                    }
+
+                                }
                             }
                         }
                     }
@@ -140,6 +152,60 @@ namespace Collision {
             }
         }
     }
+
+    //inline void HandleTileCollisions(sf::Sprite& entitySprite,
+    //    sf::CircleShape& hitbox, float entitySpeed, float dt,
+    //    const Map& map, int baseTileSize) {
+    //    // get the entity's current position
+    //    sf::Vector2f pos = hitbox.getPosition();
+
+    //    // determine the grid cell
+    //    int tileX = static_cast<int>(pos.x) / baseTileSize;
+    //    int tileY = static_cast<int>(pos.y) / baseTileSize;
+
+    //    // loop over nearby cells
+    //    for (int y = tileY - 1; y <= tileY + 1; ++y) {
+    //        for (int x = tileX - 1; x <= tileX + 1; ++x) {
+    //            for (const auto& layer : map.layers) {
+    //                // check bounds
+    //                if (y >= 0 && y < layer.height && x >= 0 && x < layer.width) {
+    //                    if (layer.collisionGrid[y][x]) {
+    //                        // create a rectangle for the tile
+    //                        sf::FloatRect tileRect(x * baseTileSize,
+    //                            y * baseTileSize, baseTileSize, baseTileSize);
+
+    //                        if (CheckCircleRectCollision(hitbox, tileRect)) {
+    //                            sf::Vector2f circleCenter = hitbox.getPosition();
+
+    //                            float closestX = std::max(tileRect.left,
+    //                                std::min(circleCenter.x,
+    //                                tileRect.left + tileRect.width));
+
+    //                            float closestY = std::max(tileRect.top,
+    //                                std::min(circleCenter.y,
+    //                                    tileRect.top + tileRect.height));
+
+    //                            sf::Vector2f collisionVec = circleCenter
+    //                                - sf::Vector2f(closestX, closestY);
+
+    //                            float distance = std::sqrt(collisionVec.x *
+    //                                collisionVec.x + collisionVec.y
+    //                                * collisionVec.y);
+
+    //                            if (distance == 0)
+    //                                continue;
+
+    //                            sf::Vector2f normal = collisionVec / distance;
+
+    //                            SlideEntityAlongTile(entitySprite, hitbox,
+    //                                entitySpeed, dt, normal);
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 }
 
 #endif

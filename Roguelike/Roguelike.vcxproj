@@ -148,6 +148,8 @@
     <ClCompile Include="gameloop.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="projectile.cpp" />
+    <ClCompile Include="projectilemanager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="collision.h" />
@@ -159,6 +161,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="playerview.h" />
     <ClInclude Include="projectile.h" />
+    <ClInclude Include="projectilemanager.h" />
     <ClInclude Include="utility.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
