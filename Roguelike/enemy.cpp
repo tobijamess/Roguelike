@@ -20,7 +20,6 @@ void Orc::Load() {
 	sprite.setTextureRect(sf::IntRect(xSpriteIndex * spriteSize.x,
 		ySpriteIndex * spriteSize.y,
 		spriteSize.x, spriteSize.y));
-	sprite.setPosition(700, 600);
 	sprite.setScale(enemyScaleFactor);
 	sprite.setOrigin(spriteSize.x / 2.f, spriteSize.y / 2.f);
 
@@ -68,7 +67,6 @@ void Goblin::Load() {
 	sprite.setTextureRect(sf::IntRect(xSpriteIndex * spriteSize.x,
 		ySpriteIndex * spriteSize.y,
 		spriteSize.x, spriteSize.y));
-	sprite.setPosition(300, 200);
 	sprite.setScale(enemyScaleFactor);
 	sprite.setOrigin(spriteSize.x / 2.f, spriteSize.y / 2.f);
 

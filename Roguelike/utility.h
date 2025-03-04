@@ -1,4 +1,4 @@
-#ifndef UTILITY_H
+﻿#ifndef UTILITY_H
 #define UTILITY_H
 
 #include <SFML/Graphics.hpp>
@@ -18,6 +18,14 @@ namespace Utility {
 		normalizedVector.y = vector.y / m;
 
 		return normalizedVector;
+	}
+
+	inline float CalculateRotation(sf::Vector2f vector) {
+		float radians = atan2(vector.y, vector.x);
+		// get rotation degrees by multiplying radians by 180 and dividing by pi
+		float degrees = radians * (180.0f / 3.14159265359f);
+
+		return degrees;
 	}
 
 	inline bool IsPlayerInRange(const sf::Vector2f& playerPos,

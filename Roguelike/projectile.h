@@ -2,6 +2,7 @@
 #define PROJECTILE_H
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include "player.h"
 
 class Projectile {
@@ -15,7 +16,10 @@ protected:
 	sf::Vector2f projScaleFactor;
 
 	float speed;
+	bool fired = false;
 	bool isMoving = false;
+	sf::Vector2f direction = { 0.f, 0.f };
+	float rotation = 0.f;
 
 	float hitboxScaleFactor;
 	sf::CircleShape hitbox;
@@ -52,12 +56,22 @@ public:
 	// override functions
 	virtual void Initialize() = 0;
 	virtual void Load() = 0;
-	virtual void Update(float dt) = 0;
+	virtual void Update(sf::Vector2f direction, float rotation, float dt) = 0;
 	virtual void Draw(sf::RenderWindow& window) = 0;
 
 	void SetPosition(const sf::Vector2f& pos) {
 		sprite.setPosition(pos);
 		hitbox.setPosition(pos);
+	}
+
+	bool IsFired() const {
+		return fired;
+	}
+	void SetFired(bool state) {
+		fired = state;
+	}
+	void Fire() {
+		fired = true;
 	}
 
 	// getter functions for collision
@@ -79,6 +93,12 @@ public:
 	const bool& GetMovingStatus() const {
 		return isMoving;
 	}
+	sf::Vector2f GetDirection() const {
+		return direction;
+	}
+	float GetRotation() {
+		return rotation;
+	}
 };
 
 class Fireball : public Projectile {
@@ -91,7 +111,7 @@ public:
 	// derived over-ridden functions
 	void Initialize() override;
 	void Load() override;
-	void Update(float dt) override;
+	void Update(sf::Vector2f dir, float rot, float dt) override;
 	void Draw(sf::RenderWindow& window) override;
 };
 
@@ -105,7 +125,7 @@ public:
 	// derived over-ridden functions
 	void Initialize() override;
 	void Load() override;
-	void Update(float dt) override;
+	void Update(sf::Vector2f dir, float rot, float dt) override;
 	void Draw(sf::RenderWindow& window) override;
 };
 

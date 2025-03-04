@@ -3,8 +3,9 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "enemymanager.h"
 #include "player.h"
+#include "enemymanager.h"
+#include "projectilemanager.h"
 #include "playerview.h"
 #include "collision.h"
 #include "map.h"
@@ -13,6 +14,7 @@ class Game {
 private:
 	Player player;
 	EnemyManager enemyManager;
+	ProjectileManager projectileManager;
 	
 	sf::RenderWindow window;
 	sf::View view;
@@ -30,5 +32,8 @@ public:
 	Game();
 	void Run();
 	void GameLoop(float dt);
+	const sf::RenderWindow& ConstGetWindow() const {
+		return window;
+	}
 };
 #endif

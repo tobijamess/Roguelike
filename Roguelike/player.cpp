@@ -21,7 +21,6 @@ void Player::Load() {
 	sprite.setTexture(texture);
 	sprite.setTextureRect(sf::IntRect(xSpriteIndex * spriteSize.x,
         ySpriteIndex * spriteSize.y, spriteSize.x, spriteSize.y));
-	sprite.setPosition(400, 400);
     sprite.setScale(playerScaleFactor);
     sprite.setOrigin(spriteSize.x / 2.f, spriteSize.y / 2.f);
 

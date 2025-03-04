@@ -3,7 +3,8 @@
 Game::Game()
 	: window(sf::VideoMode(1280, 720), "Roguelike"),
 	player(),
-	enemyManager(player)
+	enemyManager(player),
+	projectileManager(player)
 {	
 	// load and initialize class instances
 	player.Initialize();
@@ -69,8 +70,10 @@ void Game::GameLoop(float dt) {
 			std::cout << "Collision with Enemy!\n";
 		}
 	}
+
 	player.Update(dt);
 	enemyManager.UpdateEnemies(dt);
+	projectileManager.UpdateProjectiles(window, dt);
 
 	Collision::HandleTileCollisionsMTV(player.GetSprite(), player.GetHitbox(),
 		player.ConstGetSpeed(), dt, map, baseTileSize, player.GetMovingStatus());
@@ -86,6 +89,7 @@ void Game::GameLoop(float dt) {
 
 	player.Draw(window);
 	enemyManager.DrawEnemies(window);
+	projectileManager.DrawProjectiles(window);
 
 	
 
