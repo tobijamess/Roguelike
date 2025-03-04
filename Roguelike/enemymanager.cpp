@@ -47,3 +47,14 @@ void EnemyManager::SpawnRandomEnemy() {
 
     enemies.push_back(std::move(enemy));
 }
+
+void EnemyManager::RemoveDeadEnemies() {
+    enemies.erase(
+        std::remove_if(enemies.begin(), enemies.end(),
+            [](const std::unique_ptr<Enemy>& enemy) {
+                return !enemy->IsAlive();
+            }
+        ),
+        enemies.end()
+    );
+}

@@ -117,6 +117,8 @@ void Game::GameLoop(float dt) {
 			}
 		}
 
+		enemyManager.RemoveDeadEnemies();
+
 		Collision::HandleTileCollisionsMTV(proj->GetSprite(), proj->GetHitbox(),
 			proj->ConstGetSpeed(), dt, map, baseTileSize, proj->GetMovingStatus(),
 			[&]() {
@@ -133,8 +135,5 @@ void Game::GameLoop(float dt) {
 	enemyManager.DrawEnemies(window);
 	projectileManager.DrawProjectiles(window);
 
-	
-
 	window.display();
 }
-

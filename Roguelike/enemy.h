@@ -91,6 +91,12 @@ public:
 	int TakeDamage(int damage) {
 		return health -= damage;
 	}
+	int GetHealth() const {
+		return health;
+	}
+	bool IsAlive() const {
+		return health > 0;
+	}
 
 	// getter functions for collision
 	const sf::CircleShape& ConstGetHitbox() const {
@@ -111,7 +117,6 @@ public:
 	const bool& GetMovingStatus() const{
 		return isMoving;
 	}
-
 };
 
 class Orc : public Enemy {

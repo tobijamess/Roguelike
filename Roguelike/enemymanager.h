@@ -9,7 +9,7 @@
 class EnemyManager {
 private:
 	Player& player;
-	const int enemyCap = 1;
+	const int enemyCap = 10;
 protected:
 	std::vector<std::unique_ptr<Enemy>> enemies;
 	Orc orc;
@@ -21,6 +21,7 @@ public:
 	void UpdateEnemies(float dt);
 	void DrawEnemies(sf::RenderWindow& window);
 	void SpawnRandomEnemy();
+	void RemoveDeadEnemies();
 	// getter for collision detection loop
 	const std::vector<std::unique_ptr<Enemy>>& GetEnemies() const {
 		return enemies;
