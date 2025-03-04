@@ -82,6 +82,14 @@ void Game::GameLoop(float dt) {
 		Collision::HandleTileCollisionsMTV(enemy->GetSprite(), enemy->GetHitbox(),
 			enemy->ConstGetSpeed(), dt, map, baseTileSize, enemy->GetMovingStatus());
 	}
+
+	for (const auto& proj : projectileManager.GetProjectiles()) {
+		Collision::HandleTileCollisionsMTV(proj->GetSprite(), proj->GetHitbox(),
+			proj->ConstGetSpeed(), dt, map, baseTileSize, proj->GetMovingStatus(),
+			[&]() {
+				proj->SetFired(false);
+			});
+	}
 	
 	window.clear();
 

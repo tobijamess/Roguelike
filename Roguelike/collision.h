@@ -91,7 +91,8 @@ namespace Collision {
     // so it sits flush with tiles
     inline void HandleTileCollisionsMTV(sf::Sprite& entitySprite,
         sf::CircleShape& hitbox, float entitySpeed, float dt,
-        const Map& map, int baseTileSize, bool isMoving) {
+        const Map& map, int baseTileSize, bool isMoving,
+        const std::function<void()>& OnCollision = nullptr) {
 
         // get the entities current pos and determine grid cell pos
         sf::Vector2f pos = hitbox.getPosition();
@@ -136,7 +137,10 @@ namespace Collision {
                                     entitySprite.move(MTV);
                                     hitbox.move(MTV);
 
-                                    if (isMoving) {
+                                    if (OnCollision) {
+                                        OnCollision();
+                                    }
+                                    else if (isMoving) {
                                         sf::Vector2f tangent(-normal.y, normal.x);
                                         sf::Vector2f slideOffset =
                                             tangent * entitySpeed * dt;

@@ -62,6 +62,15 @@ void ProjectileManager::UpdateProjectiles(sf::RenderWindow& window, float dt) {
             proj->Update(proj->GetDirection(), proj->GetRotation(), dt);
         }
     }
+
+    projectiles.erase(
+        std::remove_if(projectiles.begin(), projectiles.end(),
+            [](const std::unique_ptr<Projectile>& proj) {
+                return !proj->IsFired();
+            }
+        ),
+        projectiles.end()
+    );
 }
 
 void ProjectileManager::DrawProjectiles(sf::RenderWindow& window) {
