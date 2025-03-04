@@ -5,6 +5,12 @@
 #include <iostream>
 #include "player.h"
 
+enum ProjectileOwner {
+	PLAYER,
+	ENEMY,
+	NONE
+};
+
 class Projectile {
 protected:
 	Player& player;
@@ -15,6 +21,9 @@ protected:
 	sf::Vector2f spriteSize;
 	sf::Vector2f projScaleFactor;
 
+	ProjectileOwner owner = ProjectileOwner::NONE;
+
+	int damage;
 	float speed;
 	bool fired = false;
 	bool isMoving = false;
@@ -43,11 +52,11 @@ protected:
 public:
 	// constructor
 	Projectile(Player& plyr, sf::Texture txtre, sf::Sprite sprt, int xIndx, 
-		int yIndx, sf::Vector2f size, sf::Vector2f scale, float spd, 
+		int yIndx, sf::Vector2f size, sf::Vector2f scale, int dmg, float spd, 
 		float htbxScale, sf::CircleShape htbx, float htbxRad)
 		: player(plyr), texture(txtre), sprite(sprt), xSpriteIndex(xIndx),
-		ySpriteIndex(yIndx), spriteSize(size), projScaleFactor(scale), speed(spd),
-		hitboxScaleFactor(htbxScale), hitbox(htbx), hitboxRadius(htbxRad)
+		ySpriteIndex(yIndx), spriteSize(size), projScaleFactor(scale), damage(dmg),
+		speed(spd), hitboxScaleFactor(htbxScale), hitbox(htbx), hitboxRadius(htbxRad)
 	{}
 
 	// destructor
@@ -62,6 +71,13 @@ public:
 	void SetPosition(const sf::Vector2f& pos) {
 		sprite.setPosition(pos);
 		hitbox.setPosition(pos);
+	}
+
+	void SetOwner(ProjectileOwner newOwner) {
+		owner = newOwner;
+	}
+	ProjectileOwner GetOwner() const {
+		return owner;
 	}
 
 	bool IsFired() const {
@@ -87,6 +103,9 @@ public:
 	sf::Sprite& GetSprite() {
 		return sprite;
 	}
+	const int& ConstGetDamage() const {
+		return damage;
+	}
 	const float& ConstGetSpeed() const {
 		return speed;
 	}
@@ -105,7 +124,7 @@ class Fireball : public Projectile {
 public:
 	Fireball(Player& player) 
 		: Projectile(player, sf::Texture(), sf::Sprite(), 0, 0, sf::Vector2f(),
-			sf::Vector2f(), 0.f, 0.f, sf::CircleShape(), 0.f)
+			sf::Vector2f(), 0, 0.f, 0.f, sf::CircleShape(), 0.f)
 	{}
 
 	// derived over-ridden functions
@@ -119,7 +138,7 @@ class Arrow : public Projectile {
 public:
 	Arrow(Player& player)
 		: Projectile(player, sf::Texture(), sf::Sprite(), 0, 0, sf::Vector2f(),
-			sf::Vector2f(), 0.f, 0.f, sf::CircleShape(), 0.f)
+			sf::Vector2f(), 0, 0.f, 0.f, sf::CircleShape(), 0.f)
 	{}
 
 	// derived over-ridden functions

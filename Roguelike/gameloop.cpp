@@ -84,11 +84,45 @@ void Game::GameLoop(float dt) {
 	}
 
 	for (const auto& proj : projectileManager.GetProjectiles()) {
+
+		if (!proj->IsFired())
+			continue;
+
+		if (proj->GetOwner() == ProjectileOwner::PLAYER) {
+			// skip if projectile owner is player to prevent friendly fire
+			if (Collision::CheckCircleCollision(proj->ConstGetHitbox(),
+				player.ConstGetHitbox())) {
+				continue;
+			}
+
+			for (auto& enemy : enemyManager.GetEnemies()) {
+				if (Collision::CheckCircleCollision(proj->ConstGetHitbox(),
+					enemy->ConstGetHitbox())) {
+					enemy->TakeDamage(proj->ConstGetDamage());
+					proj->SetFired(false);
+				}
+			}
+		}
+		else if (proj->GetOwner() == ProjectileOwner::ENEMY) {
+			for (auto& enemy : enemyManager.GetEnemies()) {
+				if (Collision::CheckCircleCollision(proj->ConstGetHitbox(),
+					enemy->ConstGetHitbox())) {
+					continue;
+				}
+				else if (Collision::CheckCircleCollision(proj->ConstGetHitbox(),
+					player.ConstGetHitbox())) {
+					player.TakeDamage(proj->ConstGetDamage());
+					proj->SetFired(false);
+				}
+			}
+		}
+
 		Collision::HandleTileCollisionsMTV(proj->GetSprite(), proj->GetHitbox(),
 			proj->ConstGetSpeed(), dt, map, baseTileSize, proj->GetMovingStatus(),
 			[&]() {
 				proj->SetFired(false);
-			});
+			}
+		);
 	}
 	
 	window.clear();

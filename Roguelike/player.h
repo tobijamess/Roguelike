@@ -45,6 +45,10 @@ public:
 	const bool& GetMovingStatus() const {
 		return isMoving;
 	}
+
+	int TakeDamage(int damage) {
+		return health -= damage;
+	}
 };
 
 #endif 

@@ -4,6 +4,7 @@ void Fireball::Initialize() {
 	spriteSize = sf::Vector2f(32.f, 32.f);
 	projScaleFactor = sf::Vector2f(0.5f, 0.5f);
 	hitboxScaleFactor = 0.5f;
+	damage = 40;
 	speed = 600.f;
 }
 
@@ -40,7 +41,8 @@ void Arrow::Initialize() {
 	spriteSize = sf::Vector2f(32.f, 32.f);
 	projScaleFactor = sf::Vector2f(0.5f, 0.5f);
 	hitboxScaleFactor = 0.5f;
-	speed = 750.f;
+	damage = 25;
+	speed = 800.f;
 }
 
 void Arrow::Load() {
@@ -54,7 +56,7 @@ void Arrow::Load() {
 		spriteSize.x, spriteSize.y));
 	sprite.setPosition(player.ConstGetSprite().getPosition());
 	sprite.setScale(projScaleFactor);
-	sprite.setOrigin(spriteSize.x, spriteSize.y);
+	sprite.setOrigin(spriteSize.x / 2.f, spriteSize.y / 2.f);
 
 	SetupComponents();
 }

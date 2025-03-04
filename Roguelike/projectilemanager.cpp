@@ -48,6 +48,7 @@ void ProjectileManager::UpdateProjectiles(sf::RenderWindow& window, float dt) {
             proj = std::make_unique<Arrow>(player);
             std::cout << "Arrow created.\n";
         }
+        proj->SetOwner(ProjectileOwner::PLAYER);
         proj->Initialize();
         proj->Load();
         proj->SetPosition(player.ConstGetSprite().getPosition());

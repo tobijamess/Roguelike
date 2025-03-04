@@ -88,6 +88,10 @@ public:
 		attackCircle.setPosition(pos);
 	}
 
+	int TakeDamage(int damage) {
+		return health -= damage;
+	}
+
 	// getter functions for collision
 	const sf::CircleShape& ConstGetHitbox() const {
 		return hitbox;

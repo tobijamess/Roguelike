@@ -9,23 +9,17 @@
 
 namespace Collision {
 
-	inline bool CollisionDetection(const Player& player, const Enemy& enemy) {
-		sf::Vector2f direction;
-		sf::CircleShape playerHitbox = player.ConstGetHitbox();
-		sf::CircleShape enemyHitbox = enemy.ConstGetHitbox();
-		// target - current to find direction vector from player to enemy
-		direction = enemyHitbox.getPosition() - playerHitbox.getPosition();
-		// get magnitude (length) of the vector
-		float m = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-		// if m less than or equal to radii sum, collision is happening
-		float combinedRadius = playerHitbox.getRadius() + enemyHitbox.getRadius();
-        return m <= combinedRadius;
+	inline bool CheckCircleCollision(const sf::CircleShape& a, const sf::CircleShape& b) {
+        sf::Vector2f delta = a.getPosition() - b.getPosition();
+        float distanceSquared = delta.x * delta.x + delta.y * delta.y;
+        float radiiSum = a.getRadius() + b.getRadius();
+        return distanceSquared <= radiiSum * radiiSum;
 	}
 
     inline bool PlayerEnemyCollision(Player& player, Enemy& enemy,
         float dt, bool isMoving) {
 
-        if (CollisionDetection(player, enemy)) {
+        if (CheckCircleCollision(player.ConstGetHitbox(), enemy.ConstGetHitbox())) {
             // get hitbox positions
             sf::Vector2f playerPos = player.ConstGetHitbox().getPosition();
             sf::Vector2f enemyPos = enemy.ConstGetHitbox().getPosition();
