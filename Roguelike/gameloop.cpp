@@ -1,4 +1,5 @@
 #include "gameloop.h"
+#include "toroidalgeneration.h"
 
 Game::Game()
 	: window(sf::VideoMode(1280, 720), "Roguelike"),
@@ -60,29 +61,34 @@ void Game::GameLoop(float dt) {
 			window.close();
 	}
 
-	if (enemyManager.GetEnemies().size() < enemyManager.GetEnemyCap()) {
-		enemyManager.SpawnRandomEnemy();
-	}
-
-	for (const auto& enemy : enemyManager.GetEnemies()) {
-		if (Collision::PlayerEnemyCollision(player, *enemy, dt,
-			player.GetMovingStatus())) {
-			std::cout << "Collision with Enemy!\n";
-		}
-	}
-
+	// update entities
 	player.Update(dt);
 	enemyManager.UpdateEnemies(dt);
 	projectileManager.UpdateProjectiles(window, dt);
 
+	// enemy spawning
+	if (enemyManager.GetEnemies().size() < enemyManager.GetEnemyCap()) {
+		enemyManager.SpawnRandomEnemy();
+	}
+
+	// player->enemy collision
+	for (const auto& enemy : enemyManager.GetEnemies()) {
+		if (Collision::PlayerEnemyCollision(player, *enemy, dt,
+			player.GetMovingStatus())) {
+		}
+	}
+
+	// player->tile collision
 	Collision::HandleTileCollisionsMTV(player.GetSprite(), player.GetHitbox(),
 		player.ConstGetSpeed(), dt, map, baseTileSize, player.GetMovingStatus());
 
+	// enemy->tile collision
 	for (const auto& enemy : enemyManager.GetEnemies()) {
 		Collision::HandleTileCollisionsMTV(enemy->GetSprite(), enemy->GetHitbox(),
 			enemy->ConstGetSpeed(), dt, map, baseTileSize, enemy->GetMovingStatus());
 	}
 
+	// projectile->entity collision
 	for (const auto& proj : projectileManager.GetProjectiles()) {
 
 		if (!proj->IsFired())
@@ -94,7 +100,6 @@ void Game::GameLoop(float dt) {
 				player.ConstGetHitbox())) {
 				continue;
 			}
-
 			for (auto& enemy : enemyManager.GetEnemies()) {
 				if (Collision::CheckCircleCollision(proj->ConstGetHitbox(),
 					enemy->ConstGetHitbox())) {
@@ -104,6 +109,7 @@ void Game::GameLoop(float dt) {
 			}
 		}
 		else if (proj->GetOwner() == ProjectileOwner::ENEMY) {
+			// skip if projectile owner is enemy to prevent friendly fire
 			for (auto& enemy : enemyManager.GetEnemies()) {
 				if (Collision::CheckCircleCollision(proj->ConstGetHitbox(),
 					enemy->ConstGetHitbox())) {
@@ -117,8 +123,10 @@ void Game::GameLoop(float dt) {
 			}
 		}
 
+		// clear enemies with health <= 0
 		enemyManager.RemoveDeadEnemies();
 
+		// projectile->tile collision
 		Collision::HandleTileCollisionsMTV(proj->GetSprite(), proj->GetHitbox(),
 			proj->ConstGetSpeed(), dt, map, baseTileSize, proj->GetMovingStatus(),
 			[&]() {
@@ -126,14 +134,26 @@ void Game::GameLoop(float dt) {
 			}
 		);
 	}
-	
+
+	// player->map wrapping
+	sf::Vector2f newPlayerPos = Toroidal::WrapPosition(player.GetSprite().getPosition(), map, baseTileSize);
+	player.GetSprite().setPosition(newPlayerPos);
+	player.GetHitbox().setPosition(newPlayerPos);
+
+	// enemy->map wrapping
+	for (auto& enemy : enemyManager.GetEnemies()) {
+		Toroidal::WrapEntity(enemy->GetSprite(), enemy->GetHitbox(), map, baseTileSize);
+	}
+
+	// projectile->map wrapping
+	for (auto& proj : projectileManager.GetProjectiles()) {
+		Toroidal::WrapEntity(proj->GetSprite(), proj->GetHitbox(), map, baseTileSize);
+	}
+
 	window.clear();
-
 	DrawMap(window);
-
 	player.Draw(window);
 	enemyManager.DrawEnemies(window);
 	projectileManager.DrawProjectiles(window);
-
 	window.display();
 }

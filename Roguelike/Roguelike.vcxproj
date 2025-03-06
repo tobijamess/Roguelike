@@ -150,6 +150,7 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="projectile.cpp" />
     <ClCompile Include="projectilemanager.cpp" />
+    <ClCompile Include="toroidalgeneration.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="collision.h" />
@@ -162,6 +163,7 @@
     <ClInclude Include="playerview.h" />
     <ClInclude Include="projectile.h" />
     <ClInclude Include="projectilemanager.h" />
+    <ClInclude Include="toroidalgeneration.h" />
     <ClInclude Include="utility.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
