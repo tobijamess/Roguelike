@@ -22,28 +22,40 @@ Game::Game()
 }
 
 void Game::DrawMap(sf::RenderWindow& window) {
-	// iterate over each layer in the map
-	for (const auto& layer : map.layers) {
-		// loop through each tile in the layer
-		for (int y = 0; y < layer.height; ++y) {
-			for (int x = 0; x < layer.width; ++x) {
-				const Tile& tile = layer.tiles[y][x];
-				// draw the tile sprite if it is valid
-				if (tile.index >= 0) {
-					window.draw(tile.sprite);
-				}
-				// draw a collision overlay for collidable tiles
-				if (layer.collisionGrid[y][x]) {
-					sf::RectangleShape collisionRect(sf::Vector2f(baseTileSize,
-						baseTileSize));
-					collisionRect.setPosition(static_cast<float>(x * baseTileSize),
-						static_cast<float>(y * baseTileSize));
-					collisionRect.setFillColor(sf::Color(255, 0, 0, 100));
-					window.draw(collisionRect);
+
+	int mapWidth = map.layers[0].width * baseTileSize;
+	int mapHeight = map.layers[0].height * baseTileSize;
+
+	for (int offsetY = -1; offsetY <= 1; ++offsetY) {
+		for (int offsetX = -1; offsetX <= 1; ++offsetX) {
+			// iterate over each layer in the map
+			for (const auto& layer : map.layers) {
+				// loop through each tile in the layer
+				for (int y = 0; y < layer.height; ++y) {
+					for (int x = 0; x < layer.width; ++x) {
+						const Tile& tile = layer.tiles[y][x];
+						// draw the tile sprite if it is valid
+						if (tile.index >= 0) {
+							sf::Sprite sprite = tile.sprite;
+							sprite.setPosition(sprite.getPosition() + sf::Vector2f(offsetX * mapWidth,
+								offsetY * mapHeight));
+							window.draw(sprite);
+						}
+						//// draw a collision overlay for collidable tiles
+						//if (layer.collisionGrid[y][x]) {
+						//	sf::RectangleShape collisionRect(sf::Vector2f(baseTileSize,
+						//		baseTileSize));
+						//	collisionRect.setPosition(static_cast<float>(x * baseTileSize),
+						//		static_cast<float>(y * baseTileSize));
+						//	collisionRect.setFillColor(sf::Color(255, 0, 0, 100));
+						//	window.draw(collisionRect);
+						//}
+					}
 				}
 			}
 		}
 	}
+	
 }
 
 void Game::Run() {
